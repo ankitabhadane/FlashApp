@@ -1,6 +1,4 @@
 package com.example.flash.ui
-
-import android.adservices.adid.AdId
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -10,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,50 +32,81 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.flash.data.DataSource
-import java.security.MessageDigest
+import com.example.flash.R
+import com.example.flash.data.InternetItem
 
 
 @Composable
-fun ItemsScreen(flashViewModel: FlashViewModel) {
+fun ItemsScreen(flashViewModel: FlashViewModel,
+                items: List<InternetItem>) {
     val flashUiState by flashViewModel.uiState.collectAsState()
-    // Text(text = flashUiState.selectedCategory)
+  val selectedCategory = stringResource(id = flashUiState.selectedCategory)
+    val database = items.filter {
+        it.itemCategory.lowercase() == selectedCategory.lowercase()
+    }
+    val context = LocalContext.current
+    val categoryString = stringResource(id = flashUiState.selectedCategory)
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         contentPadding = PaddingValues(10.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        items(DataSource.loadItems(
-            flashUiState.selectedCategory
-        )) {
+        items(database) {
             ItemCard(
-                stringResourceId = it.stringResourceId,
-                imageResourceId = it.imageResourceId,
-                itemQuantity = it.itemQuantityId,
+                stringResourceId = it.itemName,
+                imageResourceId = it.itemUrl,
+                itemQuantity = it.itemQuality,
                 itemPrice = it.itemPrice
             )
 
         }
     }
 }
+@Composable
+fun InternetItemScreen(
+    flashViewModel: FlashViewModel,
+    itemUiState: FlashViewModel.ItemUiState) {
+    when (itemUiState) {
+        is FlashViewModel.ItemUiState.Loading -> {
+
+            LoadingScreen()
+        }
+
+        is FlashViewModel.ItemUiState.Success -> {
+            //Text(text = itemUiState.items.toString())
+            ItemsScreen(flashViewModel = flashViewModel, items = itemUiState.items)
+        }
+
+        else -> {
+            ErrorScreen()
+        }
+    }
+
+}
+
 
 @Composable
 fun ItemCard(
-    stringResourceId: Int,
-    imageResourceId: Int,
+    stringResourceId: String,
+    imageResourceId: String,
     itemQuantity: String,
     itemPrice: Int
 
 ) {
     val context = LocalContext.current
     Column(modifier = Modifier.width(150.dp)) {
-        Card() {
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color(248,221,248,255)
+            )
+        ) {
             Box()
             {
-                Image(
-                    painter = painterResource(id = imageResourceId),
-                    contentDescription = "Item Name",
+                AsyncImage(
+                    model = imageResourceId,
+                    contentDescription = stringResourceId,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(110.dp)
@@ -105,7 +135,7 @@ fun ItemCard(
             }
         }
         Text(
-            text = stringResource(id = stringResourceId),
+            text = stringResourceId,
             fontSize = 12.sp,
             modifier = Modifier
                 .fillMaxWidth()
@@ -177,5 +207,37 @@ fun ItemCard(
         }
 
     }
-
 }
+
+@Composable
+fun AsyncImage(model: String, contentDescription: String, modifier: Modifier) {
+    TODO("Not yet implemented")
+}
+
+@Composable
+    fun LoadingScreen()
+    {
+        Box(contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()) {
+            Image(
+                painterResource(id = R.drawable.loading),
+                contentDescription = "Loading "
+            )
+        }
+    }
+
+    @Composable
+    fun ErrorScreen() {
+        Box(contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()) {
+            Image(
+                painterResource(id = R.drawable.error),
+                contentDescription = "Error "
+            )
+        }
+    }
+
+
+
+
+

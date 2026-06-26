@@ -16,12 +16,14 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -79,7 +81,11 @@ fun CategoryCard(
         flashViewModel.updateClickText(categoryName)
         Toast.makeText(context, "This card was clicked", Toast.LENGTH_SHORT).show()
         onCategoryClicked(stringResorceId)
-    }) {
+    },
+        colors = CardDefaults.cardColors(
+            containerColor = Color(248,221,248,255)
+        )
+    ) {
 
         //Hardcoded name
         Column(modifier = Modifier.padding(5.dp)

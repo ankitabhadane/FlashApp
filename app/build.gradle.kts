@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -60,4 +61,10 @@ dependencies {
    // implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-scalars:3.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:3.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }
